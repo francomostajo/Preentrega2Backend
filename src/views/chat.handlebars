@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat</title>
+</head>
+<body>
+    <h1>Chat</h1>
+    <div id="messages"></div>
+    <form id="chatForm" action="/api/chat" method="POST">
+        <input type="text" id="user" placeholder="Usuario">
+        <input type="text" id="message" placeholder="Mensaje">
+        <button type="submit">Enviar</button>
+    </form>
+</body>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/chat.js"></script>
+</html>

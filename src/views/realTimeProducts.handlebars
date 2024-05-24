@@ -1,0 +1,64 @@
+<form id="formProduct">
+    <h2 >Real Time Products</h2>
+
+    <!-- Nombre del Producto -->
+    <div>
+        <label for="title" >Nombre del Producto</label>
+            <input type="text" name="title" id="title" placeholder="Title: Lampara " required>
+    </div>
+    <!-- Descripción -->
+    <div>
+        <label for="description" >Descripción</label>
+            <input type="text" name="description" id="description" placeholder="description: producto de..." required>
+    </div>
+    <!-- Stock -->
+    <div>
+        <label for="stock" >Stock</label>
+            <input type="number" name="stock" id="stock" placeholder="Stock: 100" required>
+    </div>
+    <!-- Imagen -->
+    <div>
+        <label for="thumbnail" >Imagen (URL)</label>
+            <input type="text" name="thumbnail" id="thumbnail" placeholder="image: image.jpg" required>
+    </div>
+     <!-- categoria-->
+    <div>
+        <label for="category" >Categoría</label>
+            <input type="text" name="category" id="category" placeholder="category: A,B,C..." required>
+    </div>
+    <!-- Precio -->
+    <div>
+        <label for="price">Precio</label>
+        <input type="number" name="price" id="price" placeholder="price: 100" required>
+    </div>
+
+    <!-- Estado (Checkbox) -->
+    <div>
+        <input name="status" type="checkbox" value="true" id="flexCheckChecked" checked>
+        <label for="flexCheckChecked">Estado</label>
+    </div>
+
+    <!-- Código -->
+    <div>
+        <label for="code">Código</label>
+        <input class="form-control" type="text" name="code" id="code" placeholder="code: 518214jfa" required>
+
+    </div>
+    <!-- Botón Registrar -->
+    <div>
+        <button  type="submit" id="add-btn">Registrar </button>
+    </div>
+</form>
+
+
+
+
+
+
+
+
+<div class="row mt-4" id="list-products">
+
+</div>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/realTimeProducts.js"></script>
