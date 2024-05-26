@@ -1,35 +1,30 @@
 const socket = io();
 
-// Emit message to server
-socket.emit('message', "Comunicacion desde web Socket!");
-
-// Listen for 'productAdded' event and update the product list
 socket.on('productAdded', product => {
-    const ul = document.querySelector('ul');
-    const li = document.createElement('li');
-    li.textContent = `${product.title} - ${product.description} - ${product.price} - ${product.category} - ${product.status}`;
-    const button = document.createElement('button');
-    button.textContent = "Agregar al carrito";
-    button.onclick = () => addToCart(product._id);
-    li.appendChild(button);
-    ul.appendChild(li);
+    const productList = document.getElementById('product-list');
+    const productItem = document.createElement('li');
+    productItem.innerHTML = `
+        <h2>${product.title}</h2>
+        <p>${product.description}</p>
+        <p>Precio: $${product.price}</p>
+        <p>Stock: ${product.stock}</p>
+        <p>Categoría: ${product.category}</p>
+        <p>Estado: ${product.status}</p>
+    `;
+    productList.appendChild(productItem);
 });
 
-// Handle filter button click
-document.getElementById('filter-button').addEventListener('click', () => {
-    const category = document.getElementById('category-select').value;
-    const sort = document.getElementById('price-sort').value;
-    const availability = document.getElementById('availability-select').value;
-    const url = new URL(window.location.href);
-    url.searchParams.set('category', category);
-    url.searchParams.set('sort', sort);
-    url.searchParams.set('availability', availability);
-    window.location.href = url.toString();
+const filterForm = document.getElementById('filter-form');
+filterForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const formData = new FormData(filterForm);
+    const queryString = new URLSearchParams(formData).toString();
+    fetch(`/products?${queryString}`)
+        .then(response => response.text())
+        .then(html => {
+            document.documentElement.innerHTML = html;
+        })
+        .catch(error => {
+            console.error('Error fetching products:', error);
+        });
 });
-
-function addToCart(productId) {
-    // Lógica para agregar al carrito
-    console.log(`Producto ${productId} agregado al carrito`);
-}
-
-

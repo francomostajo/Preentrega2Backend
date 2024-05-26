@@ -1,28 +1,47 @@
 import express from 'express';
-/* import { ProductManager } from '../dao/products.js'; */
 import ProductModel from '../dao/models/product.model.js';
 
 const router = express.Router();
-/* const manager = new ProductManager('./src/data/Productos.json'); */
 
+router.get('/', async (req, res) => {
+    try {
+        const products = await ProductModel.find().lean();
+        res.render('home', { products });
+    } catch (error) {
+        res.status(500).json({ message: 'Error al obtener los productos' });
+    }
+});
 
 router.get('/products', async (req, res) => {
-  try {
-      const products = await ProductModel.find().lean();
-      res.render('products', { products });
-  } catch (error) {
-      res.status(500).json({ message: 'Error al obtener los productos' });
-  }
-});
-router.get('/realtimeproducts',async (req, res) => {
-    await manager.loadProducts(); 
-    const limit = req.query.limit ? parseInt(req.query.limit) : undefined;
-    const products = limit ? manager.getProducts().slice(0, limit) : manager.getProducts();
-    res.render('realTimeProducts', { products });
-  });
+    let page = parseInt(req.query.page) || 1;
+    let sort = req.query.sort || 'asc';
+    let category = req.query.category || '';
+    let availability = req.query.availability || '';
 
-  router.get('/chat', (req, res) => {
+    let filter = {};
+    if (category) filter.category = category;
+    if (availability) filter.status = availability;
+
+    try {
+        let result = await ProductModel.paginate(filter, {
+            page,
+            limit: 5,
+            lean: true,
+            sort: { price: sort === 'asc' ? 1 : -1 }
+        });
+
+        result.prevLink = result.hasPrevPage ? `http://localhost:8080/products?page=${result.prevPage}` : '';
+        result.nextLink = result.hasNextPage ? `http://localhost:8080/products?page=${result.nextPage}` : '';
+        result.isValid = !(page <= 0 || page > result.totalPages);
+
+        res.render('products', result);
+    } catch (error) {
+        res.status(500).json({ message: 'Error al obtener los productos' });
+    }
+});
+router.get('/chat', (req, res) => {
     res.render('chat');
 });
   
+
 export default router;

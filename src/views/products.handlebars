@@ -7,58 +7,46 @@
 </head>
 <body>
     <h1>Lista de Productos</h1>
-    <div>
-        <label for="category-select">Filtrar por categoría:</label>
-        <select id="category-select">
+    <form id="filter-form">
+        <select name="sort" id="sort">
+            <option value="asc">Precio: Menor a Mayor</option>
+            <option value="desc">Precio: Mayor a Menor</option>
+        </select>
+        <select name="category" id="category">
+            <option value="">Todas las Categorías</option>
+            <option value="categoria1">Categoría 1</option>
+            <option value="categoria2">Categoría 2</option>
+        </select>
+        <select name="availability" id="availability">
             <option value="">Todas</option>
-            <option value="Categoria1">Categoría 1</option>
-            <option value="Categoria2">Categoría 2</option>
-            <!-- Agregar más opciones según tus categorías -->
-        </select>
-
-        <label for="price-sort">Ordenar por precio:</label>
-        <select id="price-sort">
-            <option value="">Seleccionar</option>
-            <option value="asc">Menor a mayor</option>
-            <option value="desc">Mayor a menor</option>
-        </select>
-
-        <label for="availability-select">Disponibilidad:</label>
-        <select id="availability-select">
-            <option value="">Seleccionar</option>
             <option value="available">Disponible</option>
-            <option value="unavailable">No disponible</option>
+            <option value="outofstock">Agotado</option>
         </select>
-
-        <button id="filter-button">Filtrar</button>
-    </div>
-
-    {{#if isValid}}
-    <ul>
+        <button type="submit">Filtrar</button>
+    </form>
+    <ul id="product-list">
         {{#each docs}}
-        <li>
-            {{title}} - {{description}} - {{price}} - {{category}} - {{status}}
-            <button onclick="addToCart('{{this._id}}')">Agregar al carrito</button>
-        </li>
+            <li>
+                <h2>{{title}}</h2>
+                <p>{{description}}</p>
+                <p>Precio: ${{price}}</p>
+                <p>Stock: {{stock}}</p>
+                <p>Categoría: {{category}}</p>
+                <p>Estado: {{status}}</p>
+            </li>
         {{/each}}
     </ul>
     <div>
-        {{#if hasPrevPage}}
-            <a href="{{this.prevLink}}"><< Anterior</a>
+        {{#if isValid}}
+            {{#if hasPrevPage}}
+                <a href="{{prevLink}}">Anterior</a>
+            {{/if}}
+            {{page}}
+            {{#if hasNextPage}}
+                <a href="{{nextLink}}">Siguiente</a>
+            {{/if}}
         {{/if}}
-        &nbsp;
-        {{this.page}}
-        &nbsp;
-        {{#if hasNextPage}}
-            <a href="{{this.nextLink}}">Siguiente >></a>
-        {{/if}} 
     </div>
-    {{else}}
-    <h1>No hay productos para mostrar</h1>
-    {{/if}}
-    
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="/js/products.js"></script>
 </body>
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/products.js"></script>
