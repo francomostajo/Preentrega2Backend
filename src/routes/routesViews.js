@@ -42,6 +42,12 @@ router.get('/products', async (req, res) => {
 router.get('/chat', (req, res) => {
     res.render('chat');
 });
-  
+router.get('/register', (req, res) => {
+    res.render('register');
+}); 
+
+router.get('/login', (req, res) => {
+    res.render('login');
+}); 
 
 export default router;

@@ -1,15 +1,21 @@
-import mongoose from "mongoose";
-//crear la coleccion con el nombre
-
-const userCollection = "usuarios"
+import mongoose from 'mongoose';
+import bcrypt from 'bcrypt';
 
 const userSchema = new mongoose.Schema({
-    nombre: {type: String, required:true, max: 100},
-    apellido: {type: String, required:true, max: 100},
-    email: {type: String, required: true, max:50 }
-})
+    firstName: { type: String, required: true },
+    lastName: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    role: { type: String, enum: ['admin', 'user'], default: 'user' }
+});
 
+userSchema.pre('save', async function(next) {
+    if (this.isModified('password')) {
+        this.password = await bcrypt.hash(this.password, 10);
+    }
+    next();
+});
 
-const userModel= mongoose.model(userCollection,userSchema)
+const User = mongoose.model('User', userSchema);
 
-export default userModel
+export default User;
