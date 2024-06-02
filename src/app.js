@@ -12,6 +12,8 @@ import { initializeSockets } from './dao/socketManager.js';
 import mongoose from 'mongoose';
 import session from 'express-session'; // Importar express-session
 import passport from 'passport'; // Importar passport
+import flash from 'express-flash';
+
 
 const app = express();
 const PORT = 8080;
@@ -21,11 +23,13 @@ const socketServer = new Server(httpServer);
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+
 app.use(session({
     secret: 'your_secret_key',
     resave: false,
     saveUninitialized: false
 }));
+app.use(flash());
 
 app.use(passport.initialize());
 app.use(passport.session());

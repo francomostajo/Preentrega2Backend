@@ -14,5 +14,9 @@
         <input type="password" id="password" name="password" required>
         <button type="submit">Login</button>
     </form>
+     <a href="/register">Registrarse</a>
+    {{#if message}}
+    <div>{{message}}</div>
+    {{/if}}
 </body>
 </html>

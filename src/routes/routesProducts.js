@@ -4,14 +4,14 @@ import { socketServer } from '../app.js';
 
 const router = express.Router();
 
-/* router.get('/', async (req, res) => {
+ router.get('/', async (req, res) => {
     try {
         const productos = await ProductModel.find().lean();
         res.render('home', { productos });
     } catch (error) {
         res.status(500).json({ message: 'Error al obtener los productos' });
     }
-}); */
+}); 
 
 // Obtener un producto por ID
 router.get('/:pid', async (req, res) => {

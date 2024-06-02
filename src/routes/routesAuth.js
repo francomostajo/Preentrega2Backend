@@ -55,17 +55,29 @@ router.post('/register', async (req, res) => {
 });
 
 // Ruta para login
-router.post('/login', passport.authenticate('local', {
-    successRedirect: '/products',
-    failureRedirect: '/login',
-    failureFlash: true
-}));
+router.post('/login', (req, res, next) => {
+    passport.authenticate('local', (err, user, info) => {
+        if (err) {
+            return next(err);
+        }
+        if (!user) {
+            req.flash('error', 'Usuario no registrado. Por favor, regístrese.');
+            // Aquí renderizas la vista de login y envías el mensaje flash
+            return res.render('login', { message: req.flash('error') });
+        }
+        req.logIn(user, (err) => {
+            if (err) {
+                return next(err);
+            }
+            return res.redirect('/products');
+        });
+    })(req, res, next);
+});
 
 // Ruta para logout
-router.get('/logout', (req, res) => {
-    req.logout(() => {
-        res.redirect('/login');
-    });
+router.post('/logout', (req, res) => {
+    req.logout();
+    res.redirect('/login');
 });
 
 export default router;

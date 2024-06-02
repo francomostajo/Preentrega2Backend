@@ -2,7 +2,7 @@ import MessageModel from './models/message.model.js';
 
 const initializeSockets = (socketServer) => {
     socketServer.on('connection', socket => {
-        console.log("Nuevo cliente conectado");
+        /* console.log("Nuevo cliente conectado"); */
 
         // Emitir mensajes anteriores al cliente al conectar
         MessageModel.find().sort({ timestamp: 1 }).lean().then(messages => {

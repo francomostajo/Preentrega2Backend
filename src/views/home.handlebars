@@ -6,12 +6,11 @@
     <title>Lista de Productos</title>
 </head>
 <body>
-    <h1>Lista de Productos</h1>
-    <ul>
-        {{#each products}}
-        <li>{{title}}</li>
-        {{/each}}
-    </ul>
+{{#if user.firstName}}
+    <p>Bienvenido, {{user.firstName}} {{user.lastName}} ({{user.role}})</p>
+{{else}}
+    <p>Bienvenido, Invitado</p>
+{{/if}}
 </body>
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/products.js"></script>

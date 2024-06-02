@@ -8,8 +8,14 @@
 <body>
     <h1>Lista de Productos</h1>
     
-    <!-- Mensaje de bienvenida -->
-    <p>Bienvenido, {{user.firstName}} {{user.lastName}} ({{user.role}})</p>
+    {{#if user}}
+        <p>Bienvenido, {{user.firstName}} {{user.lastName}} ({{user.role}})</p>
+        <form action="/logout" method="post">
+            <button type="submit">Logout</button>
+        </form>
+    {{else}}
+        <p>Bienvenido, Invitado</p>
+    {{/if}}
 
     <form id="filter-form">
         <select name="sort" id="sort">
