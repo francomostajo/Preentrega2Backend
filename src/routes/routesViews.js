@@ -1,13 +1,11 @@
 import express from 'express';
-import ProductModel from '../dao/models/product.model.js';
+import { isAuthenticated, isNotAuthenticated } from '../middleware/auth.js';
 import UserModel from '../dao/models/user.model.js';
+import ProductModel from '../dao/models/product.model.js';
 
 const router = express.Router();
 
-router.get('/', async (req, res) => {
-    if (!req.isAuthenticated()) {
-        return res.redirect('/login');
-    }
+router.get('/', isAuthenticated, async (req, res) => {
     try {
         const user = await UserModel.findById(req.user._id).lean();
         res.render('home', { user });
@@ -16,7 +14,8 @@ router.get('/', async (req, res) => {
         res.status(500).json({ message: 'Error al obtener el usuario' });
     }
 });
-router.get('/products', async (req, res) => {
+
+router.get('/products', isAuthenticated, async (req, res) => {
     let page = parseInt(req.query.page) || 1;
     let sort = req.query.sort || 'asc';
     let category = req.query.category || '';
@@ -43,18 +42,24 @@ router.get('/products', async (req, res) => {
         res.status(500).json({ message: 'Error al obtener los productos' });
     }
 });
-router.get('/chat', (req, res) => {
+
+router.get('/chat', isAuthenticated, (req, res) => {
     res.render('chat');
 });
-router.get('/register', (req, res) => {
-    res.render('register');
-}); 
 
-router.get('/login', (req, res) => {
+router.get('/register', isNotAuthenticated, (req, res) => {
+    res.render('register');
+});
+
+router.get('/login', isNotAuthenticated, (req, res) => {
     res.render('login');
-}); 
+});
+
 router.post('/logout', (req, res) => {
-    req.logout(() => {
+    req.logout((err) => {
+        if (err) {
+            return next(err);
+        }
         res.redirect('/login');
     });
 });

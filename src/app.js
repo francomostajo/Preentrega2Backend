@@ -11,7 +11,8 @@ import __dirname from './utils.js';
 import { initializeSockets } from './dao/socketManager.js';
 import mongoose from 'mongoose';
 import session from 'express-session'; // Importar express-session
-import passport from 'passport'; // Importar passport
+import passport from 'passport';
+import initializePassport from './config/passport.config.js';
 import flash from 'express-flash';
 
 
@@ -30,7 +31,7 @@ app.use(session({
     saveUninitialized: false
 }));
 app.use(flash());
-
+initializePassport();
 app.use(passport.initialize());
 app.use(passport.session());
 
