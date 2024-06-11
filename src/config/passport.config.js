@@ -1,7 +1,9 @@
 import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
+import GitHubStrategy from 'passport-github2';
 import UserModel from '../dao/models/user.model.js';
 import bcrypt from 'bcrypt';
+
 
 const initializePassport = () => {
     // Configuración de la estrategia local
@@ -24,6 +26,33 @@ const initializePassport = () => {
             return done(error);
         }
     }));
+
+    passport.use('github', new GitHubStrategy({
+        clientID: "Iv23liBRALCgycATkEmq",
+        clientSecret: "4ae3e3a936c445a227daf7ccf348daf68f477153",
+        callbackURL: "http://localhost:8080/api/sessions/githubcallback"
+    }, async (accessToken, refreshToken, profile, done) => {
+        try {
+            console.log(profile)
+            let user = await UserModel.findOne({ email: profile._json.email })
+            if (!user) {
+                let newUser = {
+                    first_name: profile._json.name,
+                    last_name: "",
+                    age: 20,
+                    email: profile._json.email,
+                    password: ""
+                }
+                let result = await userService.create(newUser)
+                done(null, result)
+            }
+            else {
+                done(null, user)
+            }
+        } catch (error) {
+            return done(error)
+        }
+    }))
 
     // Serialización y deserialización del usuario
     passport.serializeUser((user, done) => {

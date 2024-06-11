@@ -10,6 +10,7 @@ import routesAuth from './routes/routesAuth.js'; // Importar rutas de autenticac
 import __dirname from './utils.js';
 import { initializeSockets } from './dao/socketManager.js';
 import mongoose from 'mongoose';
+import MongoStore from 'connect-mongo';
 import session from 'express-session'; // Importar express-session
 import passport from 'passport';
 import initializePassport from './config/passport.config.js';
@@ -26,9 +27,10 @@ app.use(express.json());
 
 
 app.use(session({
-    secret: 'your_secret_key',
+    secret: 'secretkey',
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: true,
+    store: MongoStore.create({ mongoUrl: 'mongodb+srv://francomostajo:Olivia1998*@francomostajo.nq6loge.mongodb.net/ecommerce?retryWrites=true&w=majority&appName=francomostajo' }),
 }));
 app.use(flash());
 initializePassport();
@@ -47,7 +49,7 @@ app.set("views", __dirname + "/views");
 app.set("view engine", "handlebars");
 
 app.use('/', routesView);
-app.use('/', routesAuth); // Usar rutas de autenticación
+app.use('/api/sessions', routesAuth); // Usar rutas de autenticación
 initializeSockets(socketServer);
 
 mongoose.connect("mongodb+srv://francomostajo:Olivia1998*@francomostajo.nq6loge.mongodb.net/ecommerce?retryWrites=true&w=majority&appName=francomostajo").then(() => {
