@@ -4,15 +4,12 @@ import GitHubStrategy from 'passport-github2';
 import UserModel from '../dao/models/user.model.js';
 import bcrypt from 'bcrypt';
 
-
 const initializePassport = () => {
-    // Configuración de la estrategia local
     passport.use('local', new LocalStrategy({
         usernameField: 'email',
         passwordField: 'password'
     }, async (email, password, done) => {
         try {
-            // Verifica las credenciales del usuario
             const user = await UserModel.findOne({ email });
             if (!user) {
                 return done(null, false, { message: 'Usuario no encontrado' });
@@ -33,28 +30,26 @@ const initializePassport = () => {
         callbackURL: "http://localhost:8080/api/sessions/githubcallback"
     }, async (accessToken, refreshToken, profile, done) => {
         try {
-            console.log(profile)
-            let user = await UserModel.findOne({ email: profile._json.email })
+            console.log(profile);
+            let user = await UserModel.findOne({ email: profile._json.email });
             if (!user) {
-                let newUser = {
-                    first_name: profile._json.name,
-                    last_name: "",
-                    age: 20,
+                const newUser = new UserModel({
+                    first_name: profile._json.name.split(' ')[0] || "GitHub",
+                    last_name: profile._json.name.split(' ')[1] || "User",
                     email: profile._json.email,
-                    password: ""
-                }
-                let result = await userService.create(newUser)
-                done(null, result)
-            }
-            else {
-                done(null, user)
+                    password: bcrypt.hashSync(Math.random().toString(36).substring(2), 10), // Podrías generar una contraseña aleatoria si es necesario
+
+                });
+                await newUser.save();
+                done(null, newUser);
+            } else {
+                done(null, user);
             }
         } catch (error) {
-            return done(error)
+            return done(error);
         }
-    }))
+    }));
 
-    // Serialización y deserialización del usuario
     passport.serializeUser((user, done) => {
         done(null, user.id);
     });

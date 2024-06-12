@@ -1,13 +1,13 @@
 import express from 'express';
 import passport from 'passport';
-import User from '../dao/models/user.model.js'; // Importar el modelo de usuario
+import User from '../dao/models/user.model.js';
 
 const router = express.Router();
 
 router.post('/register', async (req, res) => {
-    const { firstName, lastName, email, password } = req.body;
+    const { first_name, last_name, email, password } = req.body;
     try {
-        const user = new User({ firstName, lastName, email, password });
+        const user = new User({ first_name, last_name, email, password });
         if (email === 'adminCoder@coder.com' && password === 'adminCod3r123') {
             user.role = 'admin';
         } else {
@@ -43,11 +43,11 @@ router.post('/logout', (req, res) => {
     res.redirect('/login');
 });
 
-router.get("/github", passport.authenticate("github", { scope: ["user:email"] }), async (req, res) => {});
+router.get('/github', passport.authenticate('github', { scope: ['user:email'] }));
 
-router.get("/githubcallback", passport.authenticate("github", { failureRedirect: "/login" }), async (req, res) => {
+router.get('/githubcallback', passport.authenticate('github', { failureRedirect: '/login' }), async (req, res) => {
     req.session.user = req.user;
-    res.redirect("/");
+    res.redirect('/products');
 });
 
 export default router;
