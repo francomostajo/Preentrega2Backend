@@ -7,9 +7,9 @@
 </head>
 <body>
     <h1>Lista de Productos</h1>
-    
+
     {{#if user}}
-        <p>Bienvenido, {{user.firstName}} {{user.lastName}} ({{user.role}})</p>
+        <p>Bienvenido, {{user.first_name}} {{user.last_name}} ({{user.role}})</p>
         <form action="/logout" method="post">
             <button type="submit">Logout</button>
         </form>
@@ -43,6 +43,8 @@
                 <p>Stock: {{stock}}</p>
                 <p>Categoría: {{category}}</p>
                 <p>Estado: {{status}}</p>
+                <input type="number" id="quantity-{{_id}}" min="1" value="1">
+                <button onclick="addToCart('{{_id}}')">Agregar al carrito</button>
             </li>
         {{/each}}
     </ul>

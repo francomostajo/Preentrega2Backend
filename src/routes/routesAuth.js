@@ -5,9 +5,9 @@ import User from '../dao/models/user.model.js';
 const router = express.Router();
 
 router.post('/register', async (req, res) => {
-    const { first_name, last_name, email, password } = req.body;
+    const { first_name, last_name, email, age, password } = req.body;
     try {
-        const user = new User({ first_name, last_name, email, password });
+        const user = new User({ first_name, last_name, email, age, password });
         if (email === 'adminCoder@coder.com' && password === 'adminCod3r123') {
             user.role = 'admin';
         } else {
@@ -49,5 +49,14 @@ router.get('/githubcallback', passport.authenticate('github', { failureRedirect:
     req.session.user = req.user;
     res.redirect('/products');
 });
+
+router.get('/current', (req, res) => {
+    if (req.session.user) {
+        res.json({ user: req.session.user });
+    } else {
+        res.status(401).json({ error: 'Usuario no autenticado' });
+    }
+});
+
 
 export default router;
