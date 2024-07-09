@@ -1,62 +1,13 @@
 import express from 'express';
-import passport from 'passport';
-import User from '../dao/models/user.model.js';
+import { register, login, logout, githubAuth, githubCallback, getCurrentUser } from '../controllers/auth.controller.js';
 
 const router = express.Router();
 
-router.post('/register', async (req, res) => {
-    const { first_name, last_name, email, age, password } = req.body;
-    try {
-        const user = new User({ first_name, last_name, email, age, password });
-        if (email === 'adminCoder@coder.com' && password === 'adminCod3r123') {
-            user.role = 'admin';
-        } else {
-            user.role = 'user';
-        }
-        await user.save();
-        res.redirect('/login');
-    } catch (error) {
-        res.status(500).send('Error al registrar usuario');
-    }
-});
-
-router.post('/login', (req, res, next) => {
-    passport.authenticate('local', (err, user, info) => {
-        if (err) {
-            return next(err);
-        }
-        if (!user) {
-            req.flash('error', 'Usuario no registrado. Por favor, regístrese.');
-            return res.render('login', { message: req.flash('error') });
-        }
-        req.logIn(user, (err) => {
-            if (err) {
-                return next(err);
-            }
-            return res.redirect('/products');
-        });
-    })(req, res, next);
-});
-
-router.post('/logout', (req, res) => {
-    req.logout();
-    res.redirect('/login');
-});
-
-router.get('/github', passport.authenticate('github', { scope: ['user:email'] }));
-
-router.get('/githubcallback', passport.authenticate('github', { failureRedirect: '/login' }), async (req, res) => {
-    req.session.user = req.user;
-    res.redirect('/products');
-});
-
-router.get('/current', (req, res) => {
-    if (req.session.user) {
-        res.json({ user: req.session.user });
-    } else {
-        res.status(401).json({ error: 'Usuario no autenticado' });
-    }
-});
-
+router.post('/register', register);
+router.post('/login', login);
+router.post('/logout', logout);
+router.get('/github', githubAuth);
+router.get('/githubcallback', githubCallback);
+router.get('/current', getCurrentUser);
 
 export default router;
