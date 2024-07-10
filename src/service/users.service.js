@@ -1,25 +1,32 @@
-import UserModel from '../dao/models/user.model.js';
+import {
+    findUserById,
+    findUserByEmail,
+    createUser,
+    updateUser,
+    deleteUser,
+    findAllUsers
+} from '../dao/data/userDao.js';
 
-export const getUsers = async () => {
-    return await UserModel.find();
+export const getAllUsers = async () => {
+    return await findAllUsers();
 };
 
-export const createUser = async (userData) => {
-    const { nombre, apellido, email } = userData;
-    if (!nombre || !apellido || !email) {
-        throw new Error("Faltan parámetros");
-    }
-    return await UserModel.create({ nombre, apellido, email });
+export const getUserById = async (userId) => {
+    return await findUserById(userId);
 };
 
-export const updateUser = async (uid, userData) => {
-    return await UserModel.updateOne({ _id: uid }, userData);
+export const getUserByEmail = async (email) => {
+    return await findUserByEmail(email);
 };
 
-export const deleteUser = async (uid) => {
-    return await UserModel.deleteOne({ _id: uid });
+export const registerUser = async (userData) => {
+    return await createUser(userData);
 };
 
-export const findUserByEmail = async (email) => {
-    return await UserModel.findOne({ email });
+export const modifyUser = async (userId, userData) => {
+    return await updateUser(userId, userData);
+};
+
+export const removeUser = async (userId) => {
+    return await deleteUser(userId);
 };

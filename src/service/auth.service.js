@@ -1,7 +1,10 @@
-import UserModel from '../dao/models/user.model.js';
 import bcrypt from 'bcrypt';
+import {
+    findUserByEmail,
+    createUser
+} from '../dao/data/userDao.js';
 
-export const registerUser = async (userData) => {
+export const register = async (userData) => {
     const { first_name, last_name, email, age, password } = userData;
     const user = new UserModel({ first_name, last_name, email, age, password });
     if (email === 'adminCoder@coder.com' && password === 'adminCod3r123') {
@@ -9,12 +12,12 @@ export const registerUser = async (userData) => {
     } else {
         user.role = 'user';
     }
-    await user.save();
+    await createUser(user);
     return user;
 };
 
 export const authenticateUser = async (email, password) => {
-    const user = await UserModel.findOne({ email });
+    const user = await findUserByEmail(email);
     if (!user) {
         throw new Error('Usuario no encontrado');
     }

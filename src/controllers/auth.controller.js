@@ -1,54 +1,41 @@
+import { register, authenticateUser } from '../service/auth.service.js';
 import passport from 'passport';
-import { registerUser, authenticateUser } from '../service/auth.service.js';
 
-export const register = async (req, res) => {
+export const registerUser = async (req, res) => {
     try {
-        const user = await registerUser(req.body);
+        const user = await register(req.body);
         res.redirect('/login');
     } catch (error) {
         res.status(500).send('Error al registrar usuario');
     }
 };
 
-export const login = async (req, res, next) => {
-    try {
-        const user = await authenticateUser(req.body.email, req.body.password);
-        req.logIn(user, (err) => {
-            if (err) {
-                return next(err);
-            }
-            return res.redirect('/products');
-        });
-    } catch (error) {
-        req.flash('error', error.message);
-        return res.render('login', { message: req.flash('error') });
-    }
-};
-
-export const logout = (req, res) => {
-    req.logout();
-    res.redirect('/login');
-};
-
-export const githubAuth = passport.authenticate('github', { scope: ['user:email'] });
-
-export const githubCallback = (req, res, next) => {
-    passport.authenticate('github', (err, user, info) => {
+export const loginUser = (req, res, next) => {
+    passport.authenticate('local', (err, user, info) => {
         if (err) {
             return next(err);
         }
         if (!user) {
-            req.flash('error', 'Error de autenticación con GitHub');
-            return res.redirect('/login');
+            req.flash('error', 'Usuario no registrado. Por favor, regístrese.');
+            return res.render('login', { message: req.flash('error') });
         }
         req.logIn(user, (err) => {
             if (err) {
                 return next(err);
             }
-            req.session.user = req.user;
             return res.redirect('/products');
         });
     })(req, res, next);
+};
+
+export const logoutUser = (req, res) => {
+    req.logout();
+    res.redirect('/login');
+};
+
+export const githubCallback = async (req, res) => {
+    req.session.user = req.user;
+    res.redirect('/products');
 };
 
 export const getCurrentUser = (req, res) => {

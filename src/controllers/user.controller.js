@@ -1,50 +1,56 @@
-import { getUsers, createUser, updateUser, deleteUser, findUserByEmail } from '../service/users.service.js';
+import {
+    getAllUsers,
+    getUserById,
+    getUserByEmail,
+    registerUser,
+    modifyUser,
+    removeUser
+} from '../service/users.service.js';
 
-export const getAllUsers = async (req, res) => {
+export const fetchAllUsers = async (req, res) => {
     try {
-        const users = await getUsers();
+        const users = await getAllUsers();
         res.send({ result: "success", payload: users });
     } catch (error) {
-        res.status(500).send({ status: "error", error: error.message });
+        res.status(500).send({ message: 'Error al obtener los usuarios' });
     }
 };
 
-export const addUser = async (req, res) => {
+export const fetchUserById = async (req, res) => {
     try {
-        const result = await createUser(req.body);
-        res.send({ result: "success", payload: result });
+        const { id } = req.params;
+        const user = await getUserById(id);
+        res.send({ result: "success", payload: user });
     } catch (error) {
-        res.status(400).send({ status: "error", error: error.message });
+        res.status(500).send({ message: 'Error al obtener el usuario' });
     }
 };
 
-export const loginUser = async (req, res) => {
+export const createUser = async (req, res) => {
     try {
-        const user = await findUserByEmail(req.body.email);
-        if (!user) {
-            return res.status(404).send({ status: 'error', error: 'Usuario no encontrado' });
-        }
-        // Aquí puedes hacer más validaciones, como verificar la contraseña
-        return res.send({ status: 'success', message: 'Login exitoso' });
+        const user = await registerUser(req.body);
+        res.send({ result: "success", payload: user });
     } catch (error) {
-        res.status(500).send({ status: "error", error: error.message });
+        res.status(500).send({ message: 'Error al crear el usuario' });
     }
 };
 
-export const modifyUser = async (req, res) => {
+export const updateUser = async (req, res) => {
     try {
-        const result = await updateUser(req.params.uid, req.body);
-        res.send({ result: "success", payload: result });
+        const { uid } = req.params;
+        const user = await modifyUser(uid, req.body);
+        res.send({ result: "success", payload: user });
     } catch (error) {
-        res.status(400).send({ status: "error", error: error.message });
+        res.status(500).send({ message: 'Error al actualizar el usuario' });
     }
 };
 
-export const removeUser = async (req, res) => {
+export const deleteUser = async (req, res) => {
     try {
-        const result = await deleteUser(req.params.uid);
-        res.send({ result: "success", payload: result });
+        const { uid } = req.params;
+        await removeUser(uid);
+        res.send({ result: "success" });
     } catch (error) {
-        res.status(500).send({ status: "error", error: error.message });
+        res.status(500).send({ message: 'Error al eliminar el usuario' });
     }
 };

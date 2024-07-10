@@ -1,4 +1,4 @@
-import { findProducts, findCategories } from '../dao/data/productData.js';
+import { findProducts, findCategories } from '../dao/data/productDao.js';
 
 export const getProducts = async (query) => {
     const { limit = 10, page = 1, sort, query: searchQuery, categories } = query;

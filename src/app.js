@@ -17,7 +17,6 @@ import initializePassport from './config/passport.config.js';
 import flash from 'express-flash';
 import { PORT, MONGO_URL } from './config.js'; 
 
-
 const app = express();
 const httpServer = app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 const socketServer = new Server(httpServer);
@@ -36,6 +35,7 @@ initializePassport();
 app.use(passport.initialize());
 app.use(passport.session());
 
+// Asegúrate de proteger las rutas que necesitan autenticación
 app.use('/api/products', routesProduct);
 app.use('/api/carts', routesCart);
 app.use('/api/users', routesUser);
